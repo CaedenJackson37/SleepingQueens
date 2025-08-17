@@ -41,6 +41,12 @@ def steal_queen():
         print(f"You have stolen the {queen_steal}")
         player_queens.append(queen_steal)
         computer_queens.remove(queen_steal)
+        if "Dragon" in computer_cards:
+            computer_queens.append(queen_steal)
+            player_queens.remove(queen_steal)
+            computer_cards.remove("Dragon")
+        else:
+            print("Computer has no Dragons")
 
 def obtain_queen():
     queen_name = random.choice(list(Queens.keys()))
@@ -71,6 +77,7 @@ def awaken_queen():
     if awake_queen == "Rose Queen":
         Queens["Rose Queen"] = 5
 
+
 def computer_steal_queen():
     if len(player_queens) < 1:
         print("Sorry, opponent has no Queens to steal.")
@@ -80,6 +87,12 @@ def computer_steal_queen():
         computer_queens.append(queen_steal)
         player_queens.remove(queen_steal)
         print(f"Computer has stolen the {queen_steal}")
+        if "Dragon" in player_cards:
+            player_queens.append(queen_steal)
+            computer_queens.remove(queen_steal)
+            player_cards.remove("Dragon")
+        else:
+            print("Player has no Dragons")
 
 def computer_obtain_queen():
     queen_name = random.choice(list(Queens.keys()))
@@ -99,6 +112,7 @@ def computer_sleep_queen():
     else:
         print(player_queens)
         sleeping_queen = random.choice(player_queens)
+        print(f"Computer has put the {sleeping_queen} to sleep.")
         if sleeping_queen == "Rose Queen":
             Queens["Rose Queen"] = 0
 
@@ -122,6 +136,10 @@ def computer_turn():
         computer_sleep_queen()
     else:
         computer_draw()
+    if computer_place == "Magic Wand":
+        computer_awaken_queen()
+    else:
+        computer_draw()
     if computer_place.endswith("King"):
         computer_obtain_queen()
         print(computer_queens)
@@ -142,6 +160,10 @@ def player_turn():
         player_draw()
     if place_card == "Sleeping Potion":
         sleep_queen()
+    else:
+        player_draw()
+    if place_card == "Magic Wand":
+        awaken_queen()
     else:
         player_draw()
     if place_card.endswith("King"):
