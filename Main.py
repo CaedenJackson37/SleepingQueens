@@ -32,9 +32,6 @@ def computer_draw():
             computer_cards.append(draw())
             return computer_cards
 
-def get_player_queen():
-    return queen_total
-
 def steal_queen():
     if len(computer_queens) < 1:
         print("Sorry, opponent has no Queens to steal.")
@@ -42,12 +39,15 @@ def steal_queen():
         print(computer_queens)
         queen_steal = input("Which Queen would you like to steal?: ")
         print(f"You have stolen the {queen_steal}")
+        player_queens.append(queen_steal)
+        computer_queens.remove(queen_steal)
 
 def obtain_queen():
     queen_name = random.choice(list(Queens.keys()))
     queen_value = Queens[queen_name]
 
     player_queens.append(queen_name)
+    Queens.pop(queen_name)
 
     global queen_total
     queen_total += queen_value
@@ -71,27 +71,59 @@ def awaken_queen():
     if awake_queen == "Rose Queen":
         Queens["Rose Queen"] = 5
 
+def computer_steal_queen():
+    if len(player_queens) < 1:
+        print("Sorry, opponent has no Queens to steal.")
+    else:
+        print(player_queens)
+        queen_steal = random.choice(player_queens)
+        computer_queens.append(queen_steal)
+        player_queens.remove(queen_steal)
+        print(f"Computer has stolen the {queen_steal}")
+
+def computer_obtain_queen():
+    queen_name = random.choice(list(Queens.keys()))
+    computer_queen_value = Queens[queen_name]
+
+    computer_queens.append(queen_name)
+    Queens.pop(queen_name)
+
+    global computer_queen_total
+    computer_queen_total += computer_queen_value
+
+    print(f"Computer has obtained {queen_name} (worth {computer_queen_value}). Total = {computer_queen_total}")
+
+def computer_sleep_queen():
+    if len(player_queens) < 1:
+        print("Player has no Queens to put to sleep.")
+    else:
+        print(player_queens)
+        sleeping_queen = random.choice(player_queens)
+        if sleeping_queen == "Rose Queen":
+            Queens["Rose Queen"] = 0
+
+def computer_awaken_queen():
+    print(computer_queens)
+    awake_queen = random.choice(computer_queens)
+    if awake_queen == "Rose Queen":
+        Queens["Rose Queen"] = 5
 def computer_turn():
     computer_place = random.choice(computer_cards)
-    if computer_place == "Magic Wand" and last_card_played != "Sleeping Potion":
-        print("You can only play Magic Wand after a Sleeping Potion. Choose another card.")
-    else:
-        computer_draw()
     try:
         computer_cards.remove(computer_place)
-        print(f"You have played the {computer_place}")
+        print(f"Computer has played the {computer_place}")
     except ValueError:
-        print(f"{computer_place} could not be found in your deck.")
+        print(f"{computer_place} could not be found in computer's deck.")
     if computer_place.endswith("Knight"):
-        steal_queen()
+        computer_steal_queen()
     else:
         computer_draw()
     if computer_place == "Sleeping Potion":
-        sleep_queen()
+        computer_sleep_queen()
     else:
         computer_draw()
     if computer_place.endswith("King"):
-        obtain_queen()
+        computer_obtain_queen()
         print(computer_queens)
     else:
         computer_draw()
@@ -99,10 +131,6 @@ def computer_turn():
 def player_turn():
     print(player_cards)
     place_card = input("Which card would you like to play?: ")
-    if place_card == "Magic Wand" and last_card_played != "Sleeping Potion":
-        print("You can only play Magic Wand after a Sleeping Potion. Choose another card.")
-    else:
-        player_draw()
     try:
         player_cards.remove(place_card)
         print(f"You have played the {place_card}")
